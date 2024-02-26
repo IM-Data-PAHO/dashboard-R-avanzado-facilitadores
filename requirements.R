@@ -19,4 +19,6 @@ pacman::p_load(
   rio,
   dplyr,
   lubridate
+  pool,
+  RPostgres
 )
