@@ -10,8 +10,21 @@
 
 # Requerimientos ---------------------------------------------------------------
 source("requirements.R")
-
+source("local_settings.R")
 # Conexión a bases -------------------------------------------------------------
+pool <- dbPool(RPostgres::Postgres(),
+               host = host,
+               dbname = name,
+               user = user,
+               password = pass,
+               port = 5432)
+
+
+onStop(function() {
+  poolClose(pool)
+})
+
+rnve <- tbl(pool, "rnve")
 # Inicio -----------------------------------------------------------------------
 # Justificación ----------------------------------------------------------------
 registro_civil <- rio::import("./data/Registro civil - Uruguay.csv")
