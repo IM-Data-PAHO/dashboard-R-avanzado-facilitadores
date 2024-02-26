@@ -25,42 +25,36 @@ onStop(function() {
 })
 
 rnve <- tbl(pool, "rnve")
+pop_LT1 <- tbl(pool, "poplt1")
 # Inicio -----------------------------------------------------------------------
 # Justificación ----------------------------------------------------------------
-registro_civil <- rio::import("./data/Registro civil - Uruguay.csv")
-rnve <- rio::import("./data/RNVE - Uruguay.csv")
-pop_LT1 <- rio::import("./data/POPLT1 - Uruguay.csv")
 dosis <- rnve %>% 
   # Filtramos solo para Primera dosis
   filter(dosis == "Primera") %>% 
   # Calculemos el año de cada evento de vacunación
-  mutate(ano = year(fecha_vac)) %>% 
+  mutate(ano = substr(fecha_vac, 1, 4)) %>% 
+  mutate(ano = as.numeric(ano)) %>% 
   # Agrupemos por año y dosis
   group_by(ano, dosis) %>% 
   # Calculemos cuantas vacunas fueron aplicadas para cada año y dosis
-  # NOTA: tally() es lo mismo que summarise(n = n()); o sea, contar cuántas
-  #       filas hay en cada grupo
-  # NOTA: Con el argumento name, cambiamos el nombre de la columna. En lugar
-  #       de llamarse n, se llamará total_dosis.
   tally(name = "total_dosis")
 cobertura <- dosis %>% 
   # Juntemos el numero de dosis por año y vacuna (dosis) con la población
   # objetivo para ese año (pop_LT1).
-  # NOTA: Podemos usar la sintaxis c("ano" = "year") para igualar
-  #       dos columnas que no tienen el mismo nombre, en lugar de modificar
-  #       el nombre solo para este paso.
   left_join(., pop_LT1, by = c("ano" = "year")) %>% 
   # De tal forma que la cobertura resulta ser:
+  mutate(across(c(total_dosis, n), ~ as.numeric(.))) %>% 
   mutate(cobertura = total_dosis / n  * 100) %>% 
-  mutate(cobertura = round(cobertura)) %>% 
+  mutate(cobertura = round(cobertura, 0)) %>%
   # Falla primaria
   mutate(falla_primaria = 5) %>% 
   # Inmunizados
   mutate(inmunizados = cobertura - falla_primaria) %>% 
   # Susceptibles
   mutate(susceptibles = round( n * ((100 - inmunizados) / 100), 0 )) %>% 
+  # Desagrupamos para hacer el calculo de susceptibles acumulado
   ungroup %>% 
-  arrange(ano) %>% 
+  dbplyr::window_order(ano) %>% 
   mutate(susceptibles_acumulado = cumsum(susceptibles))
 # Avanca de camapaña -----------------------------------------------------------
 # Georreferenciación -----------------------------------------------------------

@@ -18,7 +18,9 @@ pacman::p_load(
   DT,
   rio,
   dplyr,
-  lubridate
+  lubridate,
   pool,
-  RPostgres
+  RPostgres,
+  ggplot2,
+  dbplyr
 )

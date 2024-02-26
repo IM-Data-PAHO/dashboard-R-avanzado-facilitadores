@@ -24,7 +24,28 @@ shinyServer(function(input, output) {
   
   # Gráfica --------------------------------------------------------------------
   output$justificacion_graph <- renderPlot({
-    plot(x = 1:10, y = 11:20)
+    ggplot(cobertura, aes(x = ano)) +
+      # Nombres de ejes
+      labs(
+        x = "Año",
+        y = "Susceptibles Acumulados"
+      ) +
+      # Cobertura en barras
+      geom_bar(aes(y = cobertura * 400), position = "dodge", stat = "identity", fill = "#094775") +
+      # Susceptibles acumulados en lineas
+      geom_line(aes(y = susceptibles_acumulado), colour = "#ff671f", linewidth = 1) +
+      # Ajustamos los dos ejes verticales
+      scale_y_continuous(
+        # Las dosis alcanzan cerca de 40 mil
+        limits = c(0, 40e3),
+        # Agregamos un segundo eje horizontal para cobertura (con mismo factor
+        # de conversion que en geom_bar)
+        sec.axis = sec_axis( trans= ~./400, name = "Cobertura (%)")
+      ) +
+      # Ajuste de eje X
+      scale_x_continuous(breaks = seq(2018, 2023, 1)) +
+      # Ajustes visuales
+      theme_classic()
   })
   
   # Cuadro ---------------------------------------------------------------------
