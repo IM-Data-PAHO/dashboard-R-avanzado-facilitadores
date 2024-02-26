@@ -15,5 +15,8 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(
   shiny,
   shinydashboard,
-  DT
+  DT,
+  pool,
+  RPostgres,
+  dplyr
 )

@@ -12,6 +12,19 @@
 source("requirements.R")
 
 # Conexión a bases -------------------------------------------------------------
+pool <- dbPool(RPostgres::Postgres(),
+               host = "curso-r-avanzado.ct46escu0d28.us-east-1.rds.amazonaws.com",
+               dbname = "curso-r-2024",
+               user = "postgres",
+               password = "cursor2024",
+               port = 5432)
+
+
+onStop(function() {
+  poolClose(pool)
+})
+
+rnve <- tbl(pool, "rnve")
 # Inicio -----------------------------------------------------------------------
 # Justificación ----------------------------------------------------------------
 # Avanca de camapaña -----------------------------------------------------------
