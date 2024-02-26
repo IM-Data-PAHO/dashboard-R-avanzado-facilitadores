@@ -21,6 +21,19 @@ shinyServer(function(input, output) {
   output$justificacion_textbox <- renderUI({
     box(p("Descripción"), width = 12, title = "Justificacion")
   })
+  
+  # Gráfica --------------------------------------------------------------------
+  output$justificacion_graph <- renderPlot({
+    plot(x = 1:10, y = 11:20)
+  })
+  
+  # Cuadro ---------------------------------------------------------------------
+  output$justificacion_table <- renderDataTable({
+    data(iris)
+    datatable(iris)
+  })
+  
+  
   ### Avance de campaña --------------------------------------------------------
   # Cuadro informativo para seccion de Avance de campaña
   output$avance_campana_textbox <- renderUI({

@@ -14,5 +14,6 @@ if (!require("pacman")) install.packages("pacman")
 # cargar paquetes necesarios
 pacman::p_load(
   shiny,
-  shinydashboard
+  shinydashboard,
+  DT
 )
