@@ -85,3 +85,17 @@ cobertura <- cobertura_municipio %>%
 cobertura_cuadro <- cobertura_municipio %>% 
   # Elegimos las columnas que queremos mostrar
   select(ano, cod_municipio, poblacion, vacunados_primera, susceptibles)
+
+# Guardar en RData -------------------------------------------------------------
+## Eliminamos aquello que no nos servirá ---------------------------------------
+rm(
+  "con",
+  "host",
+  "name",
+  "pass",
+  "user",
+  "registro_civil",
+  "rnve"
+)
+## Guardamos -------------------------------------------------------------------
+save.image("fuentes.Rdata")
