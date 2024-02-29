@@ -16,6 +16,12 @@ shinyServer(function(input, output) {
   output$inicio_textbox <- renderUI({
     box(p("Descripción algo mas"), width = 12, title = "Inicio")
   })
+  # Foto del equipo
+  output$team_photo <- renderUI({
+    box(img(src="https://hips.hearstapps.com/hmg-prod/images/backstreet-boys-1546620965.jpg?resize=2048:*", 
+            width = 1000), 
+        width = 6, title = "El equipo")
+  })
   # Integrantes del equipo
   output$team_textbox <- renderUI({
     box(p("Alejandro, Dan, Rafa, Camilo y yo"), width = 12, title = "Equipo de trabajo")
