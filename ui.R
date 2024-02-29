@@ -47,7 +47,13 @@ fluidPage(
       tabItems(
         ### Inicio -------------------------------------------------------------
         tabItem(tabName = "inicio",
-                fluidRow(uiOutput(outputId = "inicio_textbox"))),
+                fluidRow(uiOutput(outputId = "inicio_textbox")),
+                fluidRow(
+                  box(width = 6, height = 450),
+                  box(width = 6, height = 450, uiOutput(outputId = "team_textbox"))
+                 )
+                ),
+        
         ### Justificacion ------------------------------------------------------
         tabItem(tabName = "justificacion",
                 fluidRow(uiOutput(outputId = "justificacion_textbox")),

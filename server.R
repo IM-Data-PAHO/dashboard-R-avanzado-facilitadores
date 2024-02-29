@@ -14,7 +14,11 @@ shinyServer(function(input, output) {
   ### Inicio -------------------------------------------------------------------
   # Cuadro informativo para seccion de Inicio
   output$inicio_textbox <- renderUI({
-    box(p("Descripción"), width = 12, title = "Inicio")
+    box(p("Descripción algo mas"), width = 12, title = "Inicio")
+  })
+  # Integrantes del equipo
+  output$team_textbox <- renderUI({
+    box(p("Alejandro, Dan, Rafa, Camilo y yo"), width = 12, title = "Equipo de trabajo")
   })
   ### Justificacion ------------------------------------------------------------
   # Cuadro informativo para seccion de Justificacion
