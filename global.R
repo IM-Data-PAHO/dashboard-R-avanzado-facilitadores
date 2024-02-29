@@ -12,20 +12,22 @@
 source("requirements.R")
 source("local_settings.R")
 # Conexión a bases -------------------------------------------------------------
-#pool <- dbPool(RPostgres::Postgres(),
-#               host = host,
-#               dbname = name,
-#               user = user,
-#               password = pass,
-#               port = 5432)
+# Instanciamos el pool
+# pool <- dbPool(RPostgres::Postgres(),
+#                host = host,
+#                dbname = name,
+#                user = user,
+#                password = pass,
+#                port = 5432)
 
+# Para cerrar el pool al cerrar el dashboard
+# onStop(function() {
+#   poolClose(pool)
+# })
 
-#onStop(function() {
-#  poolClose(pool)
-#})
 # Funcionamiento de DB Pool 
-#rnve <- tbl(pool, "rnve")
-#pop_LT1 <- tbl(pool, "poplt1")
+# rnve <- tbl(pool, "rnve")
+# pop_LT1 <- tbl(pool, "poplt1")
 # Carga de RData ---------------------------------------------------------------
 
 # Inicio -----------------------------------------------------------------------

@@ -83,5 +83,5 @@ cobertura <- cobertura_municipio %>%
   mutate(susceptibles_acumulado = cumsum(susceptibles))
 # Resumen para cuadro 1 --------------------------------------------------------
 cobertura_cuadro <- cobertura_municipio %>% 
-  # Elejimos las columnas que queremos mostrar
+  # Elegimos las columnas que queremos mostrar
   select(ano, cod_municipio, poblacion, vacunados_primera, susceptibles)
