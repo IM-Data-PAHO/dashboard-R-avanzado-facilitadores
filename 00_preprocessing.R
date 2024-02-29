@@ -26,33 +26,62 @@ POPLT1 <- dbReadTable(con, "poplt1")
 dbDisconnect(con)
 
 # Justificación ----------------------------------------------------------------
-dosis <- rnve %>% 
-  # Filtramos solo para Primera dosis
+## Cálculos para cuadro x municipio --------------------------------------------
+# Eliminar cuando tengamos municipio
+municipios <- c("prueba1", "prueba2")
+registro_civil$cod_municipio <- sample(municipios, size = nrow(registro_civil), replace = TRUE)
+# Calcular numero de vacunados a partir de RNVe
+vacunados_rnve <- rnve %>% 
   filter(dosis == "Primera") %>% 
-  # Calculemos el año de cada evento de vacunación
-  mutate(ano = substr(fecha_vac, 1, 4)) %>% 
-  mutate(ano = as.numeric(ano)) %>% 
-  # Agrupemos por año y dosis
-  group_by(ano, dosis) %>% 
-  # Calculemos cuantas vacunas fueron aplicadas para cada año y dosis
-  tally(name = "total_dosis")
-cobertura <- dosis %>% 
-  # Juntemos el numero de dosis por año y vacuna (dosis) con la población
-  # objetivo para ese año (pop_LT1).
-  left_join(., POPLT1, by = c("ano" = "year")) %>% 
-  # De tal forma que la cobertura resulta ser:
-  mutate(across(c(total_dosis, n), ~ as.numeric(.))) %>% 
-  mutate(cobertura = total_dosis / n  * 100) %>% 
+  mutate(ano = lubridate::year(fecha_vac)) %>% 
+  left_join(., registro_civil %>% select(ID, cod_municipio), by = "ID") %>% 
+  group_by(ano, cod_municipio) %>% 
+  tally(name = "vacunados_primera")
+# Calcular poblacion a partir de RNVe
+pop_municipio <- registro_civil %>% 
+  # Obtenemos los años de cada fecha de nacimiento
+  mutate(ano = lubridate::year(fecha_nac)) %>% 
+  # Para cada año, calculamos cuántas filas hay (o sea, cuántos nacimientos)
+  group_by(ano, cod_municipio) %>% 
+  tally(name = "poblacion")
+# Calcular cobertura y susceptibles --------------------------------------------
+cobertura_municipio <- vacunados_rnve %>% 
+  # Obtenemos el municipio a partir del registro civil
+  left_join(., pop_municipio, by = c("ano", "cod_municipio")) %>% 
+  # Calculamos cobertura
+  mutate(cobertura = vacunados_primera / poblacion  * 100) %>% 
   mutate(cobertura = round(cobertura, 0)) %>%
   # Falla primaria
   mutate(falla_primaria = 5) %>% 
   # Inmunizados
   mutate(inmunizados = cobertura - falla_primaria) %>% 
   # Susceptibles
-  mutate(susceptibles = round( n * ((100 - inmunizados) / 100), 0 )) %>% 
+  mutate(susceptibles = round( poblacion * ((100 - inmunizados) / 100), 0 )) %>% 
   # Desagrupamos para hacer el calculo de susceptibles acumulado
   ungroup %>% 
   arrange(ano) %>% 
   mutate(susceptibles_acumulado = cumsum(susceptibles))
-
-
+# Resumen para grafica 1 -------------------------------------------------------
+cobertura <- cobertura_municipio %>% 
+  # Resumimos para año, sin tomar en cuenta al municipio
+  group_by(ano) %>% 
+  summarise(
+    across(c(vacunados_primera, poblacion), ~ sum(.))
+  ) %>% 
+  # El mismo calculo de cobertura que se hizo arriba
+  mutate(cobertura = vacunados_primera / poblacion  * 100) %>% 
+  mutate(cobertura = round(cobertura, 0)) %>%
+  # Falla primaria
+  mutate(falla_primaria = 5) %>% 
+  # Inmunizados
+  mutate(inmunizados = cobertura - falla_primaria) %>% 
+  # Susceptibles
+  mutate(susceptibles = round( poblacion * ((100 - inmunizados) / 100), 0 )) %>% 
+  # Desagrupamos para hacer el calculo de susceptibles acumulado
+  ungroup %>% 
+  arrange(ano) %>% 
+  mutate(susceptibles_acumulado = cumsum(susceptibles))
+# Resumen para cuadro 1 --------------------------------------------------------
+cobertura_cuadro <- cobertura_municipio %>% 
+  # Elejimos las columnas que queremos mostrar
+  select(ano, cod_municipio, poblacion, vacunados_primera, susceptibles)

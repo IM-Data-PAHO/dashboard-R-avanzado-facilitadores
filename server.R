@@ -27,6 +27,7 @@ shinyServer(function(input, output) {
     ggplot(cobertura, aes(x = ano)) +
       # Nombres de ejes
       labs(
+        title = "Susceptibles acumulados en los últimos 5 años",
         x = "Año",
         y = "Susceptibles Acumulados"
       ) +
@@ -45,13 +46,17 @@ shinyServer(function(input, output) {
       # Ajuste de eje X
       scale_x_continuous(breaks = seq(2018, 2023, 1)) +
       # Ajustes visuales
-      theme_classic()
+      theme_classic() +
+      theme(text = element_text(size = 16))
   })
   
   # Cuadro ---------------------------------------------------------------------
   output$justificacion_table <- renderDataTable({
-    data(iris)
-    datatable(iris)
+    datatable(
+      cobertura_cuadro,
+      colnames = c("Año", "Municipio", "Población", "Vacunados", "Susceptibles"),
+      options = list(pageLength = 8)
+    )
   })
   
   
