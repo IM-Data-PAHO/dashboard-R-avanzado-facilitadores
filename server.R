@@ -19,8 +19,9 @@ shinyServer(function(input, output) {
   # Foto del equipo
   output$team_photo <- renderUI({
     box(img(src="https://hips.hearstapps.com/hmg-prod/images/backstreet-boys-1546620965.jpg?resize=2048:*", 
-            width = 1000), 
-        width = 6, title = "El equipo")
+            width = 600,
+            height = 300), 
+        width = 12, title = "El equipo")
   })
   # Integrantes del equipo
   output$team_textbox <- renderUI({
