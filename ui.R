@@ -49,7 +49,7 @@ fluidPage(
         tabItem(tabName = "inicio",
                 fluidRow(uiOutput(outputId = "inicio_textbox")),
                 fluidRow(
-                  box(width = 6, height = 450, uiOutput(outputId = "team_photo")),
+                  box(width = 6, height = 450, title = "El equipo", uiOutput(outputId = "team_photo")),
                   box(width = 6, height = 450, uiOutput(outputId = "team_textbox"))
                  )
                 ),
